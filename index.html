@@ -4,101 +4,73 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#1d2a24" />
-  <meta name="description" content="La tua libreria virtuale: scansiona ISBN, evita doppioni e tieni traccia dei tuoi libri." />
+  <meta name="description" content="Scanner rapido per raccogliere gli ISBN dei tuoi libri." />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./styles.css" />
-  <title>La mia libreria</title>
+  <link rel="stylesheet" href="./styles.css?v=5" />
+  <title>La mia libreria · ISBN</title>
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <div>
         <p class="eyebrow">LA MIA LIBRERIA</p>
-        <h1 id="pageTitle">I miei libri</h1>
+        <h1>Raccogli ISBN</h1>
       </div>
-      <button id="installBtn" class="icon-btn hidden" aria-label="Installa app" title="Installa app">⇩</button>
+      <button id="installBtn" class="icon-btn hidden" aria-label="Installa app">⇩</button>
     </header>
 
     <main>
-      <section id="homeView" class="view active" aria-label="Libreria">
+      <section class="view active">
         <div class="hero-card">
           <div>
-            <span class="hero-kicker">Collezione</span>
-            <strong id="bookCountHero">0 libri</strong>
-            <small id="readingStats">Inizia scansionando il primo libro</small>
+            <span class="hero-kicker">Scansione rapida</span>
+            <strong id="bookCountHero">0 ISBN</strong>
+            <small id="heroHint">Scansiona i libri uno dopo l'altro</small>
           </div>
-          <button class="scan-main" data-action="scan">📷 <span>Scansiona ISBN</span></button>
+          <button class="scan-main" data-action="scan">📷 <span>Scansiona</span></button>
         </div>
 
         <div class="search-row">
           <label class="search-box">
             <span>⌕</span>
-            <input id="searchInput" type="search" placeholder="Titolo, autore o ISBN…" autocomplete="off" />
+            <input id="searchInput" type="search" placeholder="Cerca ISBN…" inputmode="numeric" autocomplete="off" />
           </label>
-          <button id="filterBtn" class="square-btn" aria-label="Filtri">☷</button>
-        </div>
-
-        <div id="filterPanel" class="filter-panel hidden">
-          <button class="chip active" data-filter="all">Tutti</button>
-          <button class="chip" data-filter="unread">Da leggere</button>
-          <button class="chip" data-filter="reading">In lettura</button>
-          <button class="chip" data-filter="read">Letti</button>
         </div>
 
         <div class="section-heading">
-          <h2>La tua collezione</h2>
-          <select id="sortSelect" class="sort-select" aria-label="Ordina libri">
-            <option value="added-desc">Più recenti</option>
-            <option value="title-asc">Titolo A–Z</option>
-            <option value="author-asc">Autore A–Z</option>
-          </select>
+          <h2>ISBN salvati</h2>
+          <button id="exportBtn" class="secondary-btn compact">Esporta JSON</button>
         </div>
 
         <div id="emptyState" class="empty-state">
-          <div class="empty-icon">▤</div>
-          <h3>La tua libreria è ancora vuota</h3>
-          <p>Inquadra il codice a barre ISBN sul retro di un libro e lo aggiungeremo qui.</p>
-          <button class="primary-btn" data-action="scan">Scansiona il primo libro</button>
+          <div class="empty-icon">▥</div>
+          <h3>Nessun ISBN ancora</h3>
+          <p>Inquadra il barcode del libro. Se è un vero ISBN verrà salvato immediatamente.</p>
+          <button class="primary-btn" data-action="scan">Inizia a scansionare</button>
         </div>
 
-        <div id="bookGrid" class="book-grid" aria-live="polite"></div>
-      </section>
+        <div id="isbnList" class="isbn-list" aria-live="polite"></div>
 
-      <section id="statsView" class="view" aria-label="Statistiche">
-        <div class="stats-grid">
-          <article class="stat-card"><span>Totale</span><strong id="statTotal">0</strong><small>libri</small></article>
-          <article class="stat-card"><span>Letti</span><strong id="statRead">0</strong><small>completati</small></article>
-          <article class="stat-card"><span>Da leggere</span><strong id="statUnread">0</strong><small>in attesa</small></article>
-          <article class="stat-card"><span>Autori</span><strong id="statAuthors">0</strong><small>diversi</small></article>
-        </div>
-
-        <article class="panel-card">
-          <h2>Backup</h2>
-          <p>Esporta periodicamente una copia della libreria. Potrai reimportarla su un altro dispositivo.</p>
-          <div class="stack-actions">
-            <button id="exportBtn" class="secondary-btn">Esporta libreria (.json)</button>
-            <label class="secondary-btn file-btn">Importa backup<input id="importInput" type="file" accept="application/json,.json" hidden /></label>
-          </div>
+        <article class="panel-card subtle isbn-help">
+          <h2>Come funziona</h2>
+          <p><strong>978… / 979…</strong> → ISBN del libro, viene salvato.<br>
+          Un codice commerciale come <strong>805…</strong> → non viene salvato.<br>
+          Se riscansioni un ISBN già presente, l'app te lo segnala senza duplicarlo.</p>
         </article>
 
         <article class="panel-card">
-          <h2>Aggiunta manuale</h2>
-          <p>Utile per libri vecchi, codici rovinati o edizioni senza barcode.</p>
-          <button id="manualAddBtn" class="primary-btn full">Aggiungi un libro a mano</button>
-        </article>
-
-        <article class="panel-card subtle">
-          <h2>Dove vengono salvati i dati?</h2>
-          <p>In questa versione rimangono sul dispositivo, nel database locale del browser. Nessun account richiesto.</p>
+          <h2>Backup / merge</h2>
+          <p>Puoi reimportare un JSON esportato in precedenza: gli ISBN già presenti vengono ignorati e i nuovi vengono aggiunti.</p>
+          <label class="secondary-btn file-btn">Importa JSON<input id="importInput" type="file" accept="application/json,.json" hidden /></label>
         </article>
       </section>
     </main>
 
-    <nav class="bottom-nav" aria-label="Navigazione principale">
-      <button class="nav-item active" data-view="home"><span>▦</span><small>Libreria</small></button>
+    <nav class="bottom-nav isbn-nav" aria-label="Scanner">
+      <span></span>
       <button class="nav-scan" data-action="scan" aria-label="Scansiona ISBN">📷</button>
-      <button class="nav-item" data-view="stats"><span>◫</span><small>Gestisci</small></button>
+      <span></span>
     </nav>
   </div>
 
@@ -115,67 +87,22 @@
         <div id="cameraMessage" class="camera-message">Avvio fotocamera…</div>
       </div>
 
-      <label class="rapid-toggle">
-        <span><strong>Modalità rapida</strong><small>Aggiunge automaticamente i libri riconosciuti e continua a scansionare.</small></span>
-        <input id="rapidMode" type="checkbox" checked />
-      </label>
+      <div class="rapid-toggle">
+        <span><strong>Modalità continua</strong><small>Ogni ISBN valido viene salvato subito. Non devi confermare nulla.</small></span>
+        <strong id="sessionCount">0</strong>
+      </div>
 
       <div class="manual-isbn">
-        <span>Oppure inserisci ISBN</span>
+        <span>Oppure inserisci un ISBN a mano</span>
         <div>
           <input id="isbnInput" inputmode="numeric" placeholder="978…" maxlength="17" />
-          <button id="lookupIsbnBtn" class="secondary-btn compact">Cerca</button>
+          <button id="saveIsbnBtn" class="secondary-btn compact">Salva</button>
         </div>
       </div>
     </div>
   </dialog>
 
-  <dialog id="bookDialog" class="book-dialog">
-    <form id="bookForm" method="dialog" class="book-sheet">
-      <div class="dialog-head sticky">
-        <div><p id="bookDialogKicker" class="eyebrow">NUOVO LIBRO</p><h2 id="bookDialogTitle">Aggiungi alla libreria</h2></div>
-        <button type="button" id="closeBookBtn" class="icon-btn" aria-label="Chiudi">×</button>
-      </div>
-
-      <div class="book-form-top">
-        <div class="cover-editor">
-          <img id="formCoverPreview" alt="Copertina" />
-          <div id="coverPlaceholder" class="cover-placeholder">▤</div>
-        </div>
-        <div class="form-fields compact-fields">
-          <label>ISBN<input id="formIsbn" name="isbn" autocomplete="off" /></label>
-          <label>Titolo *<input id="formTitle" name="title" required /></label>
-          <label>Autore<input id="formAuthor" name="author" /></label>
-        </div>
-      </div>
-
-      <div class="form-fields two-col">
-        <label>Editore<input id="formPublisher" name="publisher" /></label>
-        <label>Anno<input id="formYear" name="year" inputmode="numeric" /></label>
-        <label>Stato
-          <select id="formStatus" name="status">
-            <option value="unread">Da leggere</option>
-            <option value="reading">In lettura</option>
-            <option value="read">Letto</option>
-          </select>
-        </label>
-        <label>Posizione<input id="formLocation" name="location" placeholder="Es. Salotto" /></label>
-      </div>
-      <label class="notes-label">Note<textarea id="formNotes" name="notes" rows="3" placeholder="Edizione, regalo, annotazioni…"></textarea></label>
-      <input id="formCover" name="cover" type="hidden" />
-      <input id="formId" name="id" type="hidden" />
-
-      <div id="possibleDuplicate" class="duplicate-warning hidden"></div>
-
-      <div class="form-actions">
-        <button type="button" id="deleteBookBtn" class="danger-btn hidden">Elimina</button>
-        <button type="submit" class="primary-btn">Salva libro</button>
-      </div>
-    </form>
-  </dialog>
-
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
-  <script type="module" src="./app.js?v=4"></script>
+  <script type="module" src="./app.js?v=5"></script>
 </body>
 </html>
