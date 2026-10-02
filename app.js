@@ -1,6 +1,6 @@
-import {getAllBooks,findByIsbn,saveBook,deleteBook,bulkSaveBooks} from './db.js';
-import {lookupBookByIsbn,normalizeIsbn,isLikelyIsbn} from './book-api.js';
-import {startScanner,stopScanner} from './scanner.js';
+import {getAllBooks,findByIsbn,saveBook,deleteBook,bulkSaveBooks} from './db.js?v=4';
+import {lookupBookByIsbn,normalizeIsbn,isLikelyIsbn} from './book-api.js?v=4';
+import {startScanner,stopScanner} from './scanner.js?v=4';
 
 const $=s=>document.querySelector(s);const $$=s=>[...document.querySelectorAll(s)];
 const els={
@@ -63,6 +63,8 @@ async function handleScannedCode(code){
   }
   els.cameraMessage.textContent='Cerco titolo e autore…';
   const data=await lookupBookByIsbn(code);
+  if(data){ els.cameraMessage.textContent=`Trovato: ${data.title}${data.source?` · ${data.source}`:''}`; }
+  else { els.cameraMessage.textContent='ISBN letto, ma nessun catalogo ha restituito i dati del libro.'; toast('ISBN letto, ma non trovato nei cataloghi online.','warn'); }
   const sameTitle=data?findPossibleDuplicate(data.title,data.author):null;
   if(data && els.rapid.checked && !sameTitle){
     const book={...data,id:uid(),status:'unread',location:'',notes:'',addedAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
