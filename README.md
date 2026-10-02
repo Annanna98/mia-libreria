@@ -50,3 +50,6 @@ Poi apri `http://localhost:8080`.
 ## Step successivo consigliato
 
 Aggiungere Supabase per login e sincronizzazione cloud multi-dispositivo mantenendo l'app local-first.
+
+
+<!-- pages deploy trigger 2026-10-02 -->
