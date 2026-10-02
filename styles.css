@@ -15,3 +15,11 @@
 .toast{position:fixed;z-index:100;left:50%;top:calc(18px + env(safe-area-inset-top));transform:translate(-50%,-140%);opacity:0;transition:.24s ease;background:#142019;color:#fff;border-radius:16px;padding:12px 16px;max-width:calc(100% - 32px);box-shadow:var(--shadow);font-size:14px;font-weight:750;text-align:center}.toast.show{transform:translate(-50%,0);opacity:1}.toast.warn{background:#6a481a}.toast.error{background:#7b2f2b}
 @media (min-width:600px){.book-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero-card{padding:30px}.app-shell{padding-left:24px;padding-right:24px}}
 @media (max-width:390px){.hero-card{align-items:stretch}.scan-main{min-width:112px}.book-form-top{grid-template-columns:100px 1fr}.compact-fields{gap:8px}.two-col{grid-template-columns:1fr}}
+
+.isbn-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.isbn-row{display:grid;grid-template-columns:38px 1fr 42px;align-items:center;gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:17px;padding:12px 10px;box-shadow:0 3px 10px rgba(29,42,36,.035)}
+.isbn-index{width:32px;height:32px;border-radius:10px;background:var(--sage);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--ink2)}
+.isbn-code{display:flex;flex-direction:column;min-width:0}.isbn-code strong{font-size:16px;letter-spacing:.035em;font-variant-numeric:tabular-nums}.isbn-code small{font-size:11px;color:var(--muted);margin-top:3px}
+.isbn-delete{border:0;background:#f3dfdc;color:var(--danger);width:34px;height:34px;border-radius:50%;font-size:20px}
+.isbn-help{margin-top:18px}.isbn-nav{grid-template-columns:1fr 74px 1fr}
+#sessionCount{font-family:Georgia,serif;font-size:30px;color:#fff;min-width:44px;text-align:center}
